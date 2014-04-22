@@ -124,42 +124,36 @@
                             <target>
                                 <echo message="Copying solr.xml to correct directory and applies properties filtering to it." />
                                 <copy file="${project.basedir}/src/main/resources/solr.xml" tofile="${solr.solr.home}/solr.xml" />                                
-                            </target>
-                           
-                            <target>
+                            
                                 <echo message="Copying configuration files" />
                                 <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf" >        
                                     <fileset dir="${project.basedir}/src/main/config" >
                                         <!-- TODO: Not quite sure why we're filtering these then explicitly 
                                             copying them below -->
+                                        
                                         <exclude name="**/lang/**" />
                                         <exclude name="**/velocity/**" />
                                         <exclude name="**/xslt/**" />
+                                        
                                     </fileset>
                                 </copy>
-                            </target>
-                             
-                            <target>
+
                                 <echo message="Copying language specific configuration files" />
                                 <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf/lang" >        
                                     <fileset dir="${project.basedir}/src/main/config/lang" />
                                 </copy>
-                            </target>                             
-                             
-                            <target>
+                            
                                 <echo message="Copying Velocity macros and other files" />
                                 <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf/velocity" >        
                                     <fileset dir="${project.basedir}/src/main/config/velocity" />
                                 </copy>
-                            </target>    
                             
-                            <target>
                                 <echo message="Copying XSL style sheets" />
                                 <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf/xslt" >        
                                     <fileset dir="${project.basedir}/src/main/config/xslt" />
                                 </copy>
                             </target>
-            
+                            
                         </configuration>
                     </execution>
                     
