@@ -191,7 +191,7 @@
 
                             <target>
                                 <echo message="Removing the conf directory" />
-                                <delete>
+                                <delete quiet="true">
                                     <fileset dir="${solr.solr.home}/${solr.default.core.directory}" includes="conf" />
                                 </delete> 
                             </target>
