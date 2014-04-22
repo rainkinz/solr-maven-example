@@ -126,7 +126,6 @@
                                 <copy file="${project.basedir}/src/main/resources/solr.xml" tofile="${solr.solr.home}/solr.xml" />                                
                             </target>
                            
-                           
                             <target>
                                 <echo message="Copying configuration files" />
                                 <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf" >        
@@ -164,6 +163,41 @@
                         </configuration>
                     </execution>
                     
+                    <!-- Delete Solr configuration files clean clean phase is executed -->
+                    <execution>
+                        <id>clean-solr</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            
+                            <!-- Clean the overlays directory from the project root directory -->
+                            <!-- TODO: Not sure what this is about 
+                            <resource>
+                                <clean>true</clean>
+                                <cleanEmptyDirectories>true</cleanEmptyDirectories>
+                                <directory>${project.basedir}/overlays</directory>
+                                <includes>
+                                    <include>**/**</include>
+                                </includes>
+                            </resource>
+                            -->
+
+                            <target>
+                                <echo message="Removing the solr.xml file" />
+                                <delete file="${solr.solr.home}/solr.xml" />                                
+                            </target>
+
+                            <target>
+                                <echo message="Removing the conf directory" />
+                                <delete>
+                                    <fileset dir="${solr.solr.home}/${solr.default.core.directory}" includes="conf" />
+                                </delete> 
+                            </target>
+                                
+                        </configuration>
+                    </execution>
                     
                   
                 </executions>
