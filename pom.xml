@@ -108,9 +108,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.goldin</groupId>
-                <artifactId>copy-maven-plugin</artifactId>
-                <version>0.2.5</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
                 <executions>
                     
                     <!-- Copy Solr configuration file when compile phase is executed -->
@@ -118,144 +118,54 @@
                         <id>copy-solr-config</id>
                         <phase>compile</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <resources>
-                                <!--
-                                    Copies solr.xml to correct directory and applies properties
-                                    filtering to it.
-                                -->
-                                <resource>
-                                    <directory>${project.basedir}/src/main/resources</directory>
-                                    <filtering>true</filtering>
-                                    <targetPath>${solr.solr.home}</targetPath>
-                                    <includes>
-                                        <include>solr.xml</include>
-                                    </includes>
-                                </resource>
-                                 Copies configuration files 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf</targetPath>
-                                    <excludes>
-                                        <exclude>lang</exclude>
-                                        <exclude>velocity</exclude>
-                                        <exclude>xslt</exclude>
-                                    </excludes>
-                                </resource>
-                                 Copies language specific configuration files 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config/lang</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/lang</targetPath>
-                                </resource>
-                                    Copy Velocity macros and other files 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config/velocity</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/velocity</targetPath>
-                                </resource>
-                                 Copy XSL style sheets 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config/xslt</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/xslt</targetPath>
-                                </resource>
-                            </resources>
+                            <target>
+                                <echo message="Copying solr.xml to correct directory and applies properties filtering to it." />
+                                <copy file="${project.basedir}/src/main/resources/solr.xml" tofile="${solr.solr.home}/solr.xml" />                                
+                            </target>
+                           
+                           
+                            <target>
+                                <echo message="Copying configuration files" />
+                                <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf" >        
+                                    <fileset dir="${project.basedir}/src/main/config" >
+                                        <!-- TODO: Not quite sure why we're filtering these then explicitly 
+                                            copying them below -->
+                                        <exclude name="**/lang/**" />
+                                        <exclude name="**/velocity/**" />
+                                        <exclude name="**/xslt/**" />
+                                    </fileset>
+                                </copy>
+                            </target>
+                             
+                            <target>
+                                <echo message="Copying language specific configuration files" />
+                                <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf/lang" >        
+                                    <fileset dir="${project.basedir}/src/main/config/lang" />
+                                </copy>
+                            </target>                             
+                             
+                            <target>
+                                <echo message="Copying Velocity macros and other files" />
+                                <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf/velocity" >        
+                                    <fileset dir="${project.basedir}/src/main/config/velocity" />
+                                </copy>
+                            </target>    
+                            
+                            <target>
+                                <echo message="Copying XSL style sheets" />
+                                <copy todir="${solr.solr.home}/${solr.default.core.directory}/conf/xslt" >        
+                                    <fileset dir="${project.basedir}/src/main/config/xslt" />
+                                </copy>
+                            </target>
+            
                         </configuration>
                     </execution>
                     
                     
-                    <!-- Copy Solr configuration file when compile phase is executed -->
-                    <!--
-                    <execution>
-                        <id>copy-solr-config</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                
-                                    Copies solr.xml to correct directory and applies properties
-                                    filtering to it.
-                                
-                                <resource>
-                                    <directory>${project.basedir}/src/main/resources</directory>
-                                    <filtering>true</filtering>
-                                    <targetPath>${solr.solr.home}</targetPath>
-                                    <includes>
-                                        <include>solr.xml</include>
-                                    </includes>
-                                </resource>
-                                 Copies configuration files 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf</targetPath>
-                                    <excludes>
-                                        <exclude>lang</exclude>
-                                        <exclude>velocity</exclude>
-                                        <exclude>xslt</exclude>
-                                    </excludes>
-                                </resource>
-                                 Copies language specific configuration files 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config/lang</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/lang</targetPath>
-                                </resource>
-                                    Copy Velocity macros and other files 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config/velocity</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/velocity</targetPath>
-                                </resource>
-                                 Copy XSL style sheets 
-                                <resource>
-                                    <directory>${project.basedir}/src/main/config/xslt</directory>
-                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/xslt</targetPath>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    -->
-                    
-                    
-                    <!-- Delete Solr configuration files clean clean phase is executed -->
-                    <execution>
-                        <id>clean-solr</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <failIfNotFound>false</failIfNotFound>
-                            <resources>
-                                <!-- Clean the overlays directory from the project root directory -->
-                                <resource>
-                                    <clean>true</clean>
-                                    <cleanEmptyDirectories>true</cleanEmptyDirectories>
-                                    <directory>${project.basedir}/overlays</directory>
-                                    <includes>
-                                        <include>**/**</include>
-                                    </includes>
-                                </resource>
-                                <!-- Remove the solr.xml file -->
-                                <resource>
-                                    <clean>true</clean>
-                                    <directory>${solr.solr.home}</directory>
-                                    <includes>
-                                        <include>solr.xml</include>
-                                    </includes>
-                                </resource>
-                                <!-- Remove the conf directory -->
-                                <resource>
-                                    <clean>true</clean>
-                                    <cleanEmptyDirectories>true</cleanEmptyDirectories>
-                                    <directory>${solr.solr.home}/${solr.default.core.directory}</directory>
-                                    <includes>
-                                        <include>conf</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
+                  
                 </executions>
             </plugin>
             <plugin>
